@@ -1,0 +1,1720 @@
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHA Certificates | نظام إدارة الشهادات</title>
+  <meta name="description" content="Saudi Heart Association certificate management workspace">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #d82332;
+      --red-dark: #c41820;
+      --ink: #10232b;
+      --muted: #66767d;
+      --cream: #f4f1eb;
+      --paper: #fffefb;
+      --line: #10232b1a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-family: 'Alexandria', sans-serif;
+      font-synthesis: none;
+      color: var(--ink);
+    }
+
+    body {
+      background: var(--cream);
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    /* App Shell */
+    .app-shell {
+      background: radial-gradient(circle at 85% 5%, #d8233214, transparent 30%),
+                  linear-gradient(160deg, #f8f6f1, #eeeae2);
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-shell::before {
+      content: "";
+      pointer-events: none;
+      opacity: 0.24;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+      position: fixed;
+      inset: 0;
+    }
+
+    .ambient {
+      pointer-events: none;
+      border: 1px solid #d8233214;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .ambient-one {
+      width: 520px;
+      height: 520px;
+      top: -240px;
+      left: -170px;
+    }
+
+    .ambient-two {
+      width: 260px;
+      height: 260px;
+      top: 130px;
+      left: -80px;
+      box-shadow: 0 0 0 50px #d8233206;
+    }
+
+    .page-wrap {
+      z-index: 1;
+      width: min(1440px, calc(100% - 48px));
+      margin: auto;
+      padding: 34px 0 70px;
+      position: relative;
+    }
+
+    /* Topbar */
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      justify-content: space-between;
+      align-items: center;
+      min-height: 98px;
+      padding: 18px 24px;
+      display: flex;
+    }
+
+    .brand-lockup {
+      align-items: center;
+      gap: 16px;
+      display: flex;
+    }
+
+    .heart-mark {
+      color: #fff;
+      background: linear-gradient(145deg, #ef4b58, #b81120);
+      border-radius: 22px 22px 22px 7px;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      display: grid;
+      transform: rotate(-4deg);
+      box-shadow: 0 13px 28px #d8233240;
+    }
+
+    .heart-mark svg {
+      width: 32px;
+      height: 32px;
+      transform: rotate(4deg);
+    }
+
+    .heart-mark.compact {
+      border-radius: 14px 14px 14px 5px;
+      width: 42px;
+      height: 42px;
+    }
+
+    .heart-mark.compact svg {
+      width: 22px;
+    }
+
+    .brand-lockup h1 {
+      letter-spacing: -0.04em;
+      margin: 2px 0;
+      font-size: clamp(21px, 2vw, 30px);
+    }
+
+    .brand-lockup span {
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      font: 600 12px 'DM Sans', sans-serif;
+    }
+
+    .eyebrow {
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin: 0;
+      font: 700 11px 'DM Sans', sans-serif;
+    }
+
+    .connection-pill {
+      color: #347460;
+      background: #ffffffb8;
+      border: 1px solid #fffffff2;
+      border-radius: 999px;
+      align-items: center;
+      gap: 9px;
+      padding: 11px 15px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      box-shadow: 0 8px 30px #232d320f;
+    }
+
+    .connection-pill svg { width: 16px; }
+    .connection-pill i {
+      background: #34a77d;
+      border-radius: 50%;
+      width: 7px;
+      height: 7px;
+      box-shadow: 0 0 0 5px #34a77d1f;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 26px 0;
+      display: grid;
+    }
+
+    .stat-card {
+      background: #ffffffbd;
+      border: 1px solid #ffffffe6;
+      border-radius: 24px;
+      align-items: center;
+      gap: 15px;
+      min-height: 125px;
+      padding: 22px;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 15px 45px #1824280e;
+    }
+
+    .stat-icon {
+      z-index: 1;
+      border-radius: 16px;
+      place-items: center;
+      width: 50px;
+      height: 50px;
+      display: grid;
+      position: relative;
+    }
+
+    .stat-icon svg { width: 23px; }
+    .stat-icon.red { color: var(--red); background: #d823321a; }
+    .stat-icon.green { color: #27856a; background: #27856a1a; }
+    .stat-icon.amber { color: #b47a16; background: #b47a161a; }
+    .stat-icon.navy { color: #35546a; background: #35546a1a; }
+
+    .stat-card div span {
+      color: var(--muted);
+      margin-bottom: 5px;
+      font-size: 12px;
+      display: block;
+    }
+
+    .stat-card div strong {
+      font: 700 31px 'DM Sans', sans-serif;
+      display: block;
+    }
+
+    .stat-wave {
+      color: #d823320e;
+      width: 90px;
+      height: 90px;
+      position: absolute;
+      bottom: -32px;
+      left: -22px;
+    }
+
+    /* Workspace Grid */
+    .workspace-grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: stretch;
+      gap: 20px;
+      display: grid;
+    }
+
+    .panel, .records-panel {
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      background: #ffffffd1;
+      border: 1px solid #fffffff0;
+      border-radius: 28px;
+      box-shadow: 0 22px 60px #10232b13;
+    }
+
+    .panel { padding: 28px; }
+
+    .panel-heading, .records-header {
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      display: flex;
+    }
+
+    .panel-heading span, .records-header > div span {
+      color: var(--red);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .panel-heading h2, .records-header h2 {
+      letter-spacing: -0.04em;
+      margin: 4px 0 0;
+      font-size: 22px;
+    }
+
+    .step-badge {
+      border: 1px solid var(--line);
+      color: #a6afb2;
+      border-radius: 50%;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      font: 600 12px 'DM Sans', sans-serif;
+      display: grid;
+    }
+
+    /* Type Switch */
+    .type-switch {
+      background: #f1eee8;
+      border-radius: 17px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+      margin-bottom: 21px;
+      padding: 5px;
+      display: grid;
+    }
+
+    .type-switch button {
+      color: #707d82;
+      background: transparent;
+      border: 0;
+      border-radius: 13px;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+      display: flex;
+    }
+
+    .type-switch button svg { width: 18px; }
+
+    .type-switch button.active {
+      color: var(--red);
+      background: #fff;
+      box-shadow: 0 5px 16px #12232a14;
+    }
+
+    .type-switch button.active.gold { color: #a7781f; }
+
+    /* Form Fields */
+    .field-row {
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      display: grid;
+    }
+
+    .field {
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .field > span {
+      color: #53656c;
+      align-items: center;
+      gap: 7px;
+      margin: 0 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+    }
+
+    .field > span svg { width: 15px; color: var(--red); }
+
+    .field input {
+      width: 100%;
+      color: var(--ink);
+      background: #f8f7f4d9;
+      border: 1px solid #e4e1da;
+      border-radius: 14px;
+      outline: none;
+      padding: 13px 14px;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .field input:focus {
+      background: #fff;
+      border-color: #d823327a;
+      box-shadow: 0 0 0 4px #d8233212;
+    }
+
+    .field input::placeholder { color: #b2b8ba; }
+
+    /* Primary Button */
+    .primary-button {
+      color: #fff;
+      background: linear-gradient(135deg, #e02b3a, #b41422);
+      border: 0;
+      border-radius: 16px;
+      justify-content: center;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      min-height: 53px;
+      font-weight: 800;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      box-shadow: 0 14px 25px #c0162336;
+    }
+
+    .primary-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 32px #c0162347;
+    }
+
+    .primary-button:disabled { opacity: 0.65; }
+    .primary-button svg { width: 19px; }
+    .primary-button svg:last-child { margin-right: auto; }
+
+    /* Preview Panel */
+    .preview-panel {
+      color: #fff;
+      background: linear-gradient(150deg, #14262ef7, #0c1c23fa);
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+    }
+
+    .preview-panel::after {
+      content: "";
+      border: 60px solid #ffffff05;
+      border-radius: 50%;
+      width: 300px;
+      height: 300px;
+      position: absolute;
+      bottom: -180px;
+      left: -130px;
+    }
+
+    .preview-panel .panel-heading span { color: #f16b76; }
+    .preview-panel .step-badge { color: #ffffff73; border-color: #ffffff26; }
+
+    /* Mini Certificate */
+    .mini-certificate {
+      z-index: 1;
+      min-height: 290px;
+      color: var(--ink);
+      direction: ltr;
+      background: #fffdf7;
+      border-radius: 6px;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      transform: rotate(-1.5deg);
+      box-shadow: 0 25px 45px #00000038;
+    }
+
+    .mini-certificate::before {
+      content: "";
+      border: 25px solid #d8233212;
+      border-radius: 50%;
+      width: 160px;
+      height: 160px;
+      position: absolute;
+      top: -85px;
+      right: -75px;
+    }
+
+    .mini-top {
+      color: var(--red);
+      letter-spacing: 0.12em;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font: 800 10px 'DM Sans', sans-serif;
+      display: flex;
+    }
+
+    .mini-body { text-align: center; padding: 20px; }
+
+    .mini-body small {
+      color: #8c989d;
+      letter-spacing: 0.15em;
+      font: 600 9px 'DM Sans', sans-serif;
+      display: block;
+    }
+
+    .mini-body strong {
+      color: #182f39;
+      margin: 12px 0 8px;
+      font: 700 clamp(19px, 2vw, 27px) 'DM Sans', sans-serif;
+      display: block;
+    }
+
+    .mini-body p { color: #78878d; font: 500 9px 'DM Sans', sans-serif; }
+
+    .mini-meta {
+      color: #6d7d83;
+      border-top: 1px solid #ece8e0;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      padding-top: 12px;
+      font: 600 8px 'DM Sans', sans-serif;
+      display: flex;
+    }
+
+    .mini-meta svg { color: var(--red); width: 22px; }
+
+    /* Preview Note */
+    .preview-note {
+      z-index: 1;
+      background: #ffffff0e;
+      border: 1px solid #ffffff14;
+      border-radius: 15px;
+      align-items: center;
+      gap: 12px;
+      margin-top: 25px;
+      padding: 15px;
+      display: flex;
+      position: relative;
+    }
+
+    .preview-note > svg { color: #ee6671; width: 23px; }
+    .preview-note strong, .preview-note span { display: block; }
+    .preview-note strong { margin-bottom: 3px; font-size: 12px; }
+    .preview-note span { color: #ffffff8c; font-size: 10px; line-height: 1.6; }
+
+    /* Records Panel */
+    .records-panel {
+      margin-top: 20px;
+      padding: 28px;
+    }
+
+    .records-header { margin-bottom: 20px; }
+
+    .search-box {
+      background: #f8f7f4;
+      border: 1px solid #e3e0da;
+      border-radius: 14px;
+      align-items: center;
+      gap: 9px;
+      width: min(420px, 48%);
+      padding: 0 13px;
+      display: flex;
+    }
+
+    .search-box svg { color: #8b979b; width: 18px; }
+
+    .search-box input {
+      background: transparent;
+      border: 0;
+      outline: 0;
+      width: 100%;
+      padding: 12px 0;
+      font-size: 12px;
+    }
+
+    .records-list { gap: 9px; display: grid; }
+
+    .record {
+      background: #ffffffb3;
+      border: 1px solid #ebe8e2;
+      border-radius: 18px;
+      grid-template-columns: 54px minmax(180px, 1.4fr) minmax(130px, 0.8fr) 75px 130px;
+      align-items: center;
+      gap: 16px;
+      padding: 14px;
+      transition: all 0.2s;
+      display: grid;
+    }
+
+    .record:hover {
+      border-color: #d8233233;
+      transform: translate(-3px);
+      box-shadow: 0 10px 25px #10232b0e;
+    }
+
+    .record-avatar {
+      width: 48px;
+      height: 48px;
+      color: var(--red);
+      background: #f8e8e9;
+      border-radius: 15px;
+      place-items: center;
+      font: 800 13px 'DM Sans', sans-serif;
+      display: grid;
+    }
+
+    .record-main strong, .record-main span,
+    .record-id span, .record-id strong { display: block; }
+    .record-main strong { font: 700 13px 'DM Sans', sans-serif; }
+
+    .record-main span {
+      color: var(--muted);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      margin-top: 4px;
+      font: 500 10px 'DM Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    .record-id span { color: #9aa3a6; font-size: 9px; }
+    .record-id strong { margin-top: 3px; font: 700 11px 'DM Sans', sans-serif; }
+
+    .status-tag {
+      border-radius: 999px;
+      justify-self: center;
+      padding: 7px 11px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .status-tag.active { color: #24755d; background: #e5f3ed; }
+    .status-tag.expired { color: #a35454; background: #f7e8e8; }
+
+    .record-actions { justify-content: flex-end; gap: 7px; display: flex; }
+
+    .record-actions button {
+      color: #fff;
+      background: #112a34;
+      border: 0;
+      border-radius: 11px;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 12px;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+    }
+
+    .record-actions button svg { width: 14px; }
+
+    .record-actions .delete-button {
+      color: var(--red);
+      background: #f5eded;
+      padding-inline: 9px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      color: #929da1;
+      text-align: center;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      min-height: 170px;
+      display: flex;
+    }
+
+    .empty-state > svg { color: #c7cecf; width: 34px; height: 34px; }
+    .empty-state strong { color: #5d6c72; font-size: 13px; }
+    .empty-state span { font-size: 11px; }
+
+    /* Modal */
+    .modal-backdrop {
+      z-index: 30;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: #061318d1;
+      place-items: center;
+      padding: 30px;
+      display: grid;
+      position: fixed;
+      inset: 0;
+      overflow: auto;
+    }
+
+    .modal-shell { width: min(1050px, 100%); }
+
+    .modal-toolbar {
+      color: #fff;
+      direction: rtl;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      display: flex;
+    }
+
+    .modal-toolbar span, .modal-toolbar strong { display: block; }
+    .modal-toolbar span {
+      color: #ffffff80;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font: 600 10px 'DM Sans', sans-serif;
+    }
+    .modal-toolbar strong { margin-top: 4px; font: 600 15px 'DM Sans', sans-serif; }
+    .modal-toolbar > div:last-child { gap: 8px; display: flex; }
+
+    .modal-toolbar button {
+      color: #fff;
+      background: #ffffff1a;
+      border: 1px solid #ffffff26;
+      border-radius: 12px;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      font-size: 11px;
+      display: flex;
+    }
+
+    .modal-toolbar button svg { width: 16px; }
+    .modal-toolbar .modal-close { padding: 10px; }
+
+    /* ===== CERTIFICATE STYLES ===== */
+    .certificate {
+      min-height: auto;
+      height: auto;
+      direction: ltr;
+      background: #ffffff;
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 35px 70px #0a1a1f2e;
+      border-radius: 2px;
+      display: flex;
+    }
+
+    /* Red left stripe */
+    .certificate::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 12px;
+      background: var(--red-dark);
+      z-index: 2;
+    }
+
+    .certificate-inner {
+      width: 100%;
+      padding: 25px 35px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    /* Certificate Header */
+    .cert-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .cert-logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cert-logo-mark {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(145deg, #ef4b58, #b81120);
+      border-radius: 14px 14px 14px 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      transform: rotate(-4deg);
+      box-shadow: 0 4px 12px rgba(216,35,50,0.3);
+    }
+
+    .cert-logo-mark svg {
+      width: 24px;
+      height: 24px;
+      transform: rotate(4deg);
+    }
+
+    .cert-logo-text h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .cert-logo-text p {
+      font-size: 10px;
+      color: #888;
+      margin: 2px 0 0;
+    }
+
+    .cert-badge-area {
+      text-align: right;
+    }
+
+    .cert-badge-area .cert-type-label {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: #999;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .cert-badge-area .cert-type-name {
+      font-size: clamp(13px, 1.8vw, 18px);
+      font-weight: 800;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 3px 0 0;
+    }
+
+    /* Certificate Body */
+    .cert-body {
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .cert-body .certifies-text {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: #888;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .cert-body .trainee-name {
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 5px 0;
+      direction: rtl;
+    }
+
+    .cert-body .completion-text {
+      font-size: clamp(10px, 1.1vw, 12px);
+      color: #666;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 10px auto 0;
+    }
+
+    /* Certificate Details Grid */
+    .cert-details-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 15px 0;
+      padding: 12px 0;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cert-detail-item {
+      text-align: center;
+      padding: 0 5px;
+    }
+
+    .cert-detail-item:not(:last-child) {
+      border-left: 1px solid #eee;
+    }
+
+    .cert-detail-item .detail-label {
+      font-size: 8px;
+      letter-spacing: 0.15em;
+      color: #999;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .cert-detail-item .detail-value {
+      font-size: clamp(11px, 1.1vw, 13px);
+      font-weight: 700;
+      color: #1a1a1a;
+      display: block;
+    }
+
+    .cert-center-item {
+      text-align: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 15px;
+    }
+
+    .cert-center-item .detail-label {
+      font-size: 8px;
+      letter-spacing: 0.15em;
+      color: #999;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .cert-center-item .detail-value {
+      font-size: clamp(11px, 1.1vw, 13px);
+      font-weight: 700;
+      color: #1a1a1a;
+      direction: rtl;
+      display: block;
+    }
+
+    /* Certificate Footer */
+    .cert-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 10px;
+      padding-top: 10px;
+    }
+
+    .cert-signature {
+      text-align: left;
+      min-width: 130px;
+    }
+
+    .cert-signature .sig-script {
+      font-family: 'Great Vibes', cursive;
+      font-size: 24px;
+      color: var(--red);
+      display: block;
+      line-height: 1;
+      transform: rotate(-3deg);
+      margin-bottom: 4px;
+    }
+
+    .cert-signature .sig-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #1a1a1a;
+      border-top: 1px solid #ccc;
+      padding-top: 4px;
+      display: block;
+    }
+
+    .cert-signature .sig-title {
+      font-size: 8px;
+      color: #888;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .cert-qr {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cert-qr img {
+      width: 65px;
+      height: 65px;
+      border-radius: 2px;
+      object-fit: contain;
+    }
+
+    .cert-qr p {
+      font-size: 8px;
+      color: #999;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .cert-seal {
+      width: 60px;
+      height: 60px;
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--red);
+      flex-shrink: 0;
+    }
+
+    .cert-seal svg {
+      width: 20px;
+      height: 20px;
+      margin-bottom: 2px;
+    }
+
+    .cert-seal span {
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    /* Spin */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: 1s linear infinite spin; }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .workspace-grid { grid-template-columns: 1fr; }
+      .record { grid-template-columns: 48px 1fr 120px; }
+      .record-id { display: none; }
+      .status-tag { justify-self: start; }
+      .record-actions { grid-column: 2/4; justify-content: flex-start; }
+      .preview-panel { min-height: 520px; }
+    }
+
+    @media (max-width: 640px) {
+      .page-wrap { width: min(calc(100% - 24px), 1440px); padding-top: 12px; }
+      .topbar { align-items: flex-start; padding: 16px 5px; }
+      .heart-mark { width: 52px; height: 52px; }
+      .connection-pill { padding: 11px; font-size: 0; }
+      .connection-pill i { display: none; }
+      .brand-lockup h1 { font-size: 19px; }
+      .brand-lockup span { font-size: 9px; }
+      .stats-grid { gap: 10px; margin: 15px 0; }
+      .stat-card { border-radius: 19px; min-height: 105px; padding: 14px; }
+      .stat-icon { width: 41px; height: 41px; }
+      .stat-card div strong { font-size: 24px; }
+      .stat-card div span { font-size: 9px; }
+      .panel, .records-panel { border-radius: 22px; padding: 18px; }
+      .field-row { grid-template-columns: 1fr; gap: 0; }
+      .type-switch button { font-size: 9px; }
+      .records-header { flex-direction: column; align-items: stretch; gap: 15px; }
+      .search-box { width: 100%; }
+      .record { grid-template-columns: 43px 1fr; gap: 10px; }
+      .record-avatar { width: 42px; height: 42px; }
+      .status-tag { grid-column: 1; }
+      .record-actions { grid-column: 2; }
+      .modal-backdrop { padding: 10px; }
+      .modal-toolbar { align-items: flex-start; }
+      .modal-toolbar > div:first-child { display: none; }
+      .modal-toolbar > div:last-child { justify-content: space-between; width: 100%; }
+      .certificate { min-width: 690px; }
+      .modal-shell { overflow-x: auto; }
+      .preview-panel { min-height: auto; }
+    }
+
+    /* Print */
+    @media print {
+      body * { visibility: hidden; }
+      .modal-backdrop, .modal-backdrop *,
+      #print-certificate, #print-certificate * { visibility: visible; }
+      .modal-backdrop { background: #fff; padding: 0; position: absolute; inset: 0; }
+      .modal-toolbar { display: none; }
+      .modal-shell { width: 100%; }
+      .certificate { box-shadow: none; width: 100%; }
+      @page { size: A4 landscape; margin: 0; }
+    }
+  </style>
+
+  <!-- 1. مكتبة QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+  <!-- 2. مكتبات Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+<style id="scs-access-gate-style">
+  #scs-access-gate{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#071c24;padding:24px;font-family:Arial,sans-serif}
+  #scs-access-gate .gate-card{width:min(420px,100%);background:#fff;border-radius:18px;padding:30px;box-shadow:0 20px 70px #0008;text-align:center}
+  #scs-access-gate h1{margin:0 0 10px;color:#102b35;font-size:24px}
+  #scs-access-gate p{margin:0 0 20px;color:#52636a;line-height:1.7}
+  #scs-access-gate input{box-sizing:border-box;width:100%;padding:14px 15px;border:1px solid #cbd7da;border-radius:10px;font-size:16px;text-align:center;letter-spacing:.08em}
+  #scs-access-gate button{width:100%;margin-top:12px;padding:14px;border:0;border-radius:10px;background:#0e6675;color:#fff;font-weight:700;font-size:16px;cursor:pointer}
+  #scs-access-gate button:disabled{opacity:.65;cursor:wait}
+  #scs-access-gate .gate-error{min-height:24px;margin-top:12px;color:#b42318;font-size:14px}
+  #scs-access-gate .gate-card input + input{margin-top:10px}
+  #scs-access-gate .gate-note{font-size:13px;color:#66767d;margin-top:10px}
+  .app-shell{display:none}
+  #scs-logout{margin-inline-start:12px;border:1px solid #ffffff66;border-radius:8px;padding:7px 10px;background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer}
+</style>
+
+</head>
+<body>
+  <div id="scs-access-gate">
+    <div class="gate-card">
+      <h1>دخول المدير</h1>
+      <p>سجّل الدخول لإدارة الشهادات وإصدارها.</p>
+      <form id="scs-login-form">
+        <input id="scs-login-email" type="email" value="bdallhnbylalsbyy@gmail.com" autocomplete="username" readonly aria-label="البريد الإلكتروني للمدير">
+        <input id="scs-login-password" type="password" autocomplete="current-password" placeholder="كلمة المرور" required aria-label="كلمة المرور">
+        <button id="scs-login-button" type="submit">تسجيل الدخول</button>
+      </form>
+      <div id="scs-login-error" class="gate-error" role="alert" aria-live="polite"></div>
+      <div class="gate-note">الدخول متاح لحساب المدير المحدد فقط.</div>
+    </div>
+  </div>
+  <div class="app-shell">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="page-wrap">
+
+      <!-- Header -->
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="heart-mark">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"></path></svg>
+          </div>
+          <div>
+            <p class="eyebrow">Saudi Heart Association</p>
+            <h1>نظام إدارة الشهادات</h1>
+            <span>BLS &amp; Heart Saver Provider Workspace</span>
+          </div>
+        </div>
+        <div class="connection-pill">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"></path><path d="M2 8.82a15 15 0 0 1 20 0"></path><path d="M5 12.859a10 10 0 0 1 14 0"></path><path d="M8.5 16.429a5 5 0 0 1 7 0"></path></svg>
+          <span>متصل وآمن</span>
+          <i></i>
+          <button id="scs-logout" type="button" onclick="logoutManager()">تسجيل الخروج</button>
+        </div>
+      </header>
+
+      <!-- Stats -->
+      <section class="stats-grid">
+        <article class="stat-card">
+          <div class="stat-icon red">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 22h5a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v3.3"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="m7.69 16.479 1.29 4.88a.5.5 0 0 1-.698.591l-1.843-.849a1 1 0 0 0-.879.001l-1.846.85a.5.5 0 0 1-.692-.593l1.29-4.88"></path><circle cx="6" cy="14" r="3"></circle></svg>
+          </div>
+          <div><span>إجمالي الشهادات</span><strong id="stat-total">0</strong></div>
+          <svg class="stat-wave" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon green">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path><path d="m9 12 2 2 4-4"></path></svg>
+          </div>
+          <div><span>الشهادات النشطة</span><strong id="stat-active">0</strong></div>
+          <svg class="stat-wave" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon amber">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6h4"></path></svg>
+          </div>
+          <div><span>الشهادات المنتهية</span><strong id="stat-expired">0</strong></div>
+          <svg class="stat-wave" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon navy">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12h4"></path><path d="M10 8h4"></path><path d="M14 21v-3a2 2 0 0 0-4 0v3"></path><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"></path><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"></path></svg>
+          </div>
+          <div><span>مراكز التدريب</span><strong id="stat-centers">0</strong></div>
+          <svg class="stat-wave" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg>
+        </article>
+      </section>
+
+      <!-- Workspace -->
+      <section class="workspace-grid">
+        <!-- Form Panel -->
+        <article class="panel form-panel">
+          <div class="panel-heading">
+            <div><span>إصدار جديد</span><h2>بيانات المتدرب</h2></div>
+            <div class="step-badge">01</div>
+          </div>
+
+          <div class="type-switch">
+            <button class="active" id="btn-atls" onclick="setType('atls')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"></path></svg>
+              SHA ATLS Provider
+            </button>
+            <button class="active" id="btn-bls" onclick="setType('bls')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"></path></svg>
+              SHA BLS Provider
+            </button>
+            <button id="btn-heart" onclick="setType('heart-saver')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
+              SHA Heart Saver
+            </button>
+            <button id="btn-pals" onclick="setType('pals')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              SHA PALS Provider
+            </button>
+            <button id="btn-salso" onclick="setType('salso')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              SHA ALSO Provider (SALSO)
+            </button>
+            <button id="btn-nrp" onclick="setType('nrp')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              SHA NRP Provider
+            </button>
+            <button id="btn-cpr" onclick="setType('cpr')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              SHA CPR Provider
+            </button>
+            <button id="btn-acls" onclick="setType('acls')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              SHA ACLS Provider
+            </button>
+          </div>
+
+          <form id="trainee-form" onsubmit="handleSubmit(event)">
+            <label class="field">
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"></circle><path d="M20 21a8 8 0 0 0-16 0"></path></svg>
+                الاسم الكامل بالإنجليزية
+              </span>
+              <input required placeholder="AREJ ALZAHRANI" dir="ltr" id="field-name">
+            </label>
+
+            <div class="field-row">
+              <label class="field">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                  رقم التسجيل / الهوية
+                </span>
+                <input required placeholder="552128" dir="ltr" id="field-regid">
+              </label>
+              <label class="field">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 22h5a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v3.3"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="m7.69 16.479 1.29 4.88a.5.5 0 0 1-.698.591l-1.843-.849a1 1 0 0 0-.879.001l-1.846.85a.5.5 0 0 1-.692-.593l1.29-4.88"></path><circle cx="6" cy="14" r="3"></circle></svg>
+                  eCertificate ID
+                </span>
+                <input required placeholder="590404172723" dir="ltr" id="field-ecert">
+              </label>
+            </div>
+
+            <label class="field">
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12h4"></path><path d="M10 8h4"></path><path d="M14 21v-3a2 2 0 0 0-4 0v3"></path><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"></path><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"></path></svg>
+                مركز التدريب
+              </span>
+              <input required placeholder="PERMANENT SOLUTIONS TRAINING CENTER" dir="ltr" id="field-center">
+            </label>
+
+            <div class="field-row">
+              <label class="field">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path><path d="M16 18h.01"></path></svg>
+                  تاريخ الإصدار
+                </span>
+                <input type="date" required id="field-issue">
+              </label>
+              <label class="field">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path><path d="M16 18h.01"></path></svg>
+                  تاريخ الانتهاء
+                </span>
+                <input type="date" required id="field-expiry">
+              </label>
+            </div>
+
+            <button type="submit" class="primary-button" id="submit-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
+              <span>إضافة متدرب وإنشاء الشهادة</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+            </button>
+          </form>
+        </article>
+
+        <!-- Preview Panel -->
+        <article class="panel preview-panel">
+          <div class="panel-heading">
+            <div><span>معاينة فورية</span><h2>الشهادة الرقمية</h2></div>
+            <div class="step-badge">02</div>
+          </div>
+
+          <div class="mini-certificate">
+            <div class="mini-top">
+              <div class="heart-mark compact">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"></path></svg>
+              </div>
+              <span id="preview-type">BASIC LIFE SUPPORT</span>
+            </div>
+            <div class="mini-body">
+              <small>THIS CERTIFIES THAT</small>
+              <strong id="preview-name">TRAINEE NAME</strong>
+              <p id="preview-center">Training center will appear here</p>
+            </div>
+            <div class="mini-meta">
+              <span id="preview-issue">ISSUE DATE</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
+              <span id="preview-expiry">EXPIRY DATE</span>
+            </div>
+          </div>
+
+          <div class="preview-note">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
+            <div>
+              <strong>شهادة موثقة رقمياً</strong>
+              <span>يُنشأ رمز QR فريد لكل شهادة للتحقق من أصالتها.</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Records Panel -->
+      <section class="records-panel">
+        <div class="records-header">
+          <div><span>السجل المركزي</span><h2>الشهادات المسجلة</h2></div>
+          <label class="search-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+            <input placeholder="البحث بالاسم، الرقم، أو المركز..." id="search-input" oninput="handleSearch()">
+          </label>
+        </div>
+        <div class="records-list" id="records-list">
+          <div class="empty-state" id="empty-state">
+            <svg class="spin" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+            <strong>جاري تحميل السجل</strong>
+            <span>لم يتم إضافة أي شهادة بعد</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Certificate Modal -->
+  <div class="modal-backdrop" id="cert-modal" style="display:none;" onclick="closeModal()">
+    <div class="modal-shell" onclick="event.stopPropagation()">
+      <div class="modal-toolbar">
+        <div>
+          <span>معاينة الشهادة</span>
+          <strong id="modal-name"></strong>
+        </div>
+        <div>
+          <button onclick="printCertificate()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>
+            طباعة / تنزيل
+          </button>
+          <button class="modal-close" onclick="closeModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="print-certificate"></div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYsO0fQDLMbh2V9OlL_tS9aaHmrUADdOc",
+      authDomain: "sha-certificates-new1.firebaseapp.com",
+      projectId: "sha-certificates-new1",
+      storageBucket: "sha-certificates-new1.firebasestorage.app",
+      messagingSenderId: "576150414426",
+      appId: "1:576150414426:web:a126f5f273e1b2c9b26463"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    const ADMIN_EMAIL = 'bdallhnbylalsbyy@gmail.com';
+    let certificatesUnsubscribe = null;
+    let records = [];
+    let certificateType = 'bls';
+    let searchQuery = '';
+    let qrDataUrls = {};
+
+    function listenToCertificates() {
+      certificatesUnsubscribe = db.collection('certificates')
+        .orderBy('createdAt', 'desc')
+        .onSnapshot((snapshot) => {
+          records = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          
+          renderRecords();
+          updateStats();
+          generateAllQRs();
+        }, (error) => {
+          console.error("خطأ في جلب البيانات السحابية:", error);
+        });
+    }
+
+    async function loginManager(event) {
+      event.preventDefault();
+      const email = document.getElementById('scs-login-email').value.trim().toLowerCase();
+      const passwordInput = document.getElementById('scs-login-password');
+      const button = document.getElementById('scs-login-button');
+      const errorBox = document.getElementById('scs-login-error');
+      errorBox.textContent = '';
+      if (email !== ADMIN_EMAIL) {
+        errorBox.textContent = 'هذا الحساب غير مخوّل لإدارة الشهادات.';
+        return;
+      }
+      button.disabled = true;
+      button.textContent = 'جارٍ التحقق...';
+      try {
+        await auth.signInWithEmailAndPassword(email, passwordInput.value);
+        passwordInput.value = '';
+      } catch (error) {
+        console.error('تعذر تسجيل الدخول:', error);
+        errorBox.textContent = 'تعذر تسجيل الدخول. تحقق من كلمة المرور أو إعدادات Firebase Authentication.';
+      } finally {
+        button.disabled = false;
+        button.textContent = 'تسجيل الدخول';
+      }
+    }
+    async function logoutManager() {
+      try {
+        await auth.signOut();
+      } catch (error) {
+        console.error('تعذر تسجيل الخروج:', error);
+      }
+    }
+    function init() {
+      bindLivePreview();
+      document.getElementById('scs-login-form').addEventListener('submit', loginManager);
+      auth.onAuthStateChanged(function(user) {
+        const gate = document.getElementById('scs-access-gate');
+        const appShell = document.querySelector('.app-shell');
+        if (user && user.email && user.email.toLowerCase() === ADMIN_EMAIL) {
+          gate.style.display = 'none';
+          appShell.style.display = 'block';
+          if (certificatesUnsubscribe) certificatesUnsubscribe();
+          listenToCertificates();
+        } else {
+          if (certificatesUnsubscribe) {
+            certificatesUnsubscribe();
+            certificatesUnsubscribe = null;
+          }
+          appShell.style.display = 'none';
+          gate.style.display = 'grid';
+          if (user) {
+            document.getElementById('scs-login-error').textContent = 'هذا الحساب غير مخوّل لإدارة الشهادات.';
+            auth.signOut();
+          }
+        }
+      });
+    }
+
+    function setType(type) {
+      certificateType = type;
+      document.getElementById('btn-bls').className = type === 'bls' ? 'active' : '';
+      document.getElementById('btn-heart').className = type === 'heart-saver' ? 'active gold' : '';
+      document.getElementById('btn-pals').className = type === 'pals' ? 'active' : '';
+      document.getElementById('btn-salso').className = type === 'salso' ? 'active' : '';
+      document.getElementById('btn-nrp').className = type === 'nrp' ? 'active' : '';
+      document.getElementById('btn-cpr').className = type === 'cpr' ? 'active' : '';
+      document.getElementById('btn-acls').className = type === 'acls' ? 'active' : '';
+      document.getElementById('btn-atls').className = type === 'atls' ? 'active' : '';
+
+
+      let typeText = 'BASIC LIFE SUPPORT';
+      if (type === 'heart-saver') typeText = 'HEART SAVER PROGRAM';
+      else if (type === 'pals') typeText = 'SHA PALS PROVIDER';
+      else if (type === 'salso') typeText = 'SHA ALSO PROVIDER COURSE';
+      else if (type === 'nrp') typeText = 'SHA NRP PROVIDER';
+      else if (type === 'cpr') typeText = 'SHA CPR PROVIDER';
+      else if (type === 'acls') typeText = 'SHA ACLS PROVIDER';
+      else if (type === 'atls') typeText = 'SHA ATLS PROVIDER';
+
+      document.getElementById('preview-type').textContent = typeText;
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('field-name').value.trim();
+      const regId = document.getElementById('field-regid').value.trim();
+      const ecert = document.getElementById('field-ecert').value.trim();
+      const center = document.getElementById('field-center').value.trim();
+      const issueDate = document.getElementById('field-issue').value;
+      const expiryDate = document.getElementById('field-expiry').value;
+
+      if (!name || !regId || !ecert) return;
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      if (btn.querySelector('span')) {
+        btn.querySelector('span').textContent = 'جاري الإنشاء...';
+      }
+
+      const parts = name.split(/\s+/);
+      const initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.substring(0, 2).toUpperCase();
+      const expired = expiryDate ? new Date(expiryDate) < new Date() : false;
+
+      let courseTitleAr = '';
+      let courseTitleEn = '';
+      if (certificateType === 'heart-saver') {
+        courseTitleEn = 'SHA Heart Saver';
+        courseTitleAr = 'مسعف القلوب (HeartSaver) التابع لـ SHA';
+      } else if (certificateType === 'pals') {
+        courseTitleEn = 'SHA PALS Provider';
+        courseTitleAr = 'موفر دعم الحياة المتقدم للأطفال (PALS) التابع لـ SHA';
+      } else if (certificateType === 'salso') {
+        courseTitleEn = 'SHA ALSO Provider Course (SALSO)';
+        courseTitleAr = 'دعم الحياة المتقدم في الولادة (ALSO) التابع لـ SHA';
+      } else if (certificateType === 'nrp') {
+        courseTitleEn = 'SHA NRP Provider';
+        courseTitleAr = 'برنامج إنعاش حديثي الولادة (NRP) التابع لـ SHA';
+      } else if (certificateType === 'cpr') {
+        courseTitleEn = 'SHA CPR Provider';
+        courseTitleAr = 'موفر إنعاش قلبي رئوي (CPR) التابع لـ SHA';
+      } else if (certificateType === 'acls') {
+        courseTitleEn = 'SHA ACLS Provider';
+        courseTitleAr = 'دعم الحياة القلبي المتقدم (ACLS) التابع لـ SHA';
+      }else if (certificateType === 'atls') {
+        courseTitleEn = 'SHA ATLS Provider';
+        courseTitleAr = 'دعم الحياة المتقدم في حالات الصدمات (ATLS) التابع لـ SHA';
+      } else {
+        courseTitleEn = 'SHA BLS Provider';
+        courseTitleAr = 'موفر خدمات دعم الحياة الأساسي (BLS) التابع لـ SHA';
+      }
+
+      // Record Data populated with fallbacks to align with Verification Page
+      const recordData = {
+        name: name,
+        fullName: name,
+        holderName: name,
+        initials: initials,
+        center: center || 'Training Center',
+        centerName: center || 'Training Center',
+        trainingCenter: center || 'Training Center',
+        eCertificateId: ecert,
+        certId: ecert,
+        registrationId: regId,
+        regId: regId,
+        certificateType: certificateType,
+        certType: certificateType,
+        courseName: courseTitleEn,
+        courseTitleEn: courseTitleEn,
+        courseTitleAr: courseTitleAr,
+        issueDate: issueDate,
+        validFrom: issueDate,
+        expiryDate: expiryDate,
+        validTo: expiryDate,
+        status: expired ? 'expired' : 'active',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      try {
+        await db.collection('certificates').doc(ecert).set(recordData);
+
+        document.getElementById('field-name').value = '';
+        document.getElementById('field-regid').value = '';
+        document.getElementById('field-ecert').value = '';
+        document.getElementById('field-center').value = '';
+        document.getElementById('field-issue').value = '';
+        document.getElementById('field-expiry').value = '';
+
+        alert('تم حفظ الشهادة بنجاح في السحاب! ✅');
+
+      } catch (error) {
+        console.error("خطأ أثناء حفظ البيانات السحابية:", error);
+        alert('حدث خطأ أثناء الحفظ!');
+      } finally {
+        btn.disabled = false;
+        if (btn.querySelector('span')) {
+          btn.querySelector('span').textContent = 'إضافة متدرب وإنشاء الشهادة';
+        }
+      }
+    }
+
+    function bindLivePreview() {
+      ['field-name', 'field-center', 'field-issue', 'field-expiry'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', updateLivePreview);
+      });
+    }
+
+    function updateLivePreview() {
+      const name = document.getElementById('field-name').value || 'TRAINEE NAME';
+      const center = document.getElementById('field-center').value || 'Training center will appear here';
+      const issueDate = document.getElementById('field-issue').value;
+      const expiryDate = document.getElementById('field-expiry').value;
+
+      document.getElementById('preview-name').textContent = name;
+      document.getElementById('preview-center').textContent = center;
+      document.getElementById('preview-issue').textContent = issueDate ? formatDate(issueDate) : 'ISSUE DATE';
+      document.getElementById('preview-expiry').textContent = expiryDate ? formatDate(expiryDate) : 'EXPIRY DATE';
+    }
+
+    function updateStats() {
+      document.getElementById('stat-total').textContent = records.length;
+      document.getElementById('stat-active').textContent = records.filter(function(r) { return r.status === 'active'; }).length;
+      document.getElementById('stat-expired').textContent = records.filter(function(r) { return r.status === 'expired'; }).length;
+      document.getElementById('stat-centers').textContent = new Set(records.map(function(r) { return r.center; })).size;
+    }
+
+    function generateAllQRs() {
+      qrDataUrls = {};
+      records.forEach(function(r) {
+        if (typeof QRCode !== 'undefined') {
+          const verifyUrl = window.location.origin + window.location.pathname.replace('index.html', '') + 'verify.html?id=' + encodeURIComponent(r.eCertificateId);
+          QRCode.toDataURL(verifyUrl, {
+            width: 200,
+            margin: 1,
+            color: { dark: '#102b35', light: '#ffffff' }
+          }, function(err, dataUrl) {
+            if (!err) {
+              qrDataUrls[r.id] = dataUrl;
+            }
+          });
+        }
+      });
+    }
+
+    function renderRecords() {
+      const list = document.getElementById('records-list');
+      if (!list) return;
+
+      if (records.length === 0) {
+        list.innerHTML = '<div class="empty-state"><strong>السجل فارغ</strong><span>لم يتم إضافة أي شهادة بعد</span></div>';
+        return;
+      }
+
+      const filtered = records.filter(function(r) {
+        if (!searchQuery) return true;
+        const q = searchQuery.toLowerCase();
+        return (r.name && r.name.toLowerCase().includes(q)) ||
+               (r.eCertificateId && r.eCertificateId.includes(q)) ||
+               (r.center && r.center.toLowerCase().includes(q));
+      });
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty-state"><strong>لا توجد نتائج</strong><span>جرب كلمات بحث مختلفة</span></div>';
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(function(r) {
+        const initials = r.initials || (r.name ? r.name.substring(0, 2).toUpperCase() : 'ST');
+        const statusClass = r.status === 'expired' ? 'expired' : 'active';
+        const statusText = r.status === 'expired' ? 'منتهية' : 'نشطة';
+
+        html += '<article class="record">';
+        html += '<div class="record-avatar">' + initials + '</div>';
+        html += '<div class="record-main"><strong>' + (r.name || '-') + '</strong><span>' + (r.center || '-') + '</span></div>';
+        html += '<div class="record-id"><span>eCertificate ID</span><strong>' + (r.eCertificateId || '-') + '</strong></div>';
+        html += '<div class="status-tag ' + statusClass + '">' + statusText + '</div>';
+        html += '<div class="record-actions">';
+        html += '<button onclick="viewCertificate(\'' + r.id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 22h5a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v3.3"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="m7.69 16.479 1.29 4.88a.5.5 0 0 1-.698.591l-1.843-.849a1 1 0 0 0-.879.001l-1.846.85a.5.5 0 0 1-.692-.593l1.29-4.88"></path><circle cx="6" cy="14" r="3"></circle></svg>عرض</button>';
+        html += '<button class="delete-button" onclick="deleteRecord(\'' + r.id + '\')" title="حذف"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>';
+        html += '</div></article>';
+      });
+
+      list.innerHTML = html;
+    }
+
+    function handleSearch() {
+      searchQuery = document.getElementById('search-input').value;
+      renderRecords();
+    }
+
+    async function deleteRecord(id) {
+      if (!confirm('هل أنت متأكد من رغبتك في حذف هذه الشهادة نهائياً من السحاب؟')) {
+        return;
+      }
+
+      try {
+        await db.collection('certificates').doc(id).delete();
+        alert('تم حذف الشهادة بنجاح من السحاب! 🗑️');
+      } catch (error) {
+        console.error("خطأ أثناء الحذف من السحاب:", error);
+        alert('حدث خطأ أثناء محاولة الحذف!');
+      }
+    }
+
+    function viewCertificate(id) {
+      const record = records.find(function(r) { return r.id === id; });
+      if (!record) return;
+
+      document.getElementById('modal-name').textContent = record.name;
+      document.getElementById('cert-modal').style.display = 'grid';
+
+      var certId = record.eCertificateId || record.id || '';
+      var currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+      var verifyPageUrl = currentPath + '/verify.html?id=' + encodeURIComponent(certId);
+      var qrImgSrc = qrDataUrls[record.id] || ('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(verifyPageUrl));
+
+      let typeName = 'BASIC LIFE SUPPORT';
+      if (record.certificateType === 'heart-saver') typeName = 'HEART SAVER PROGRAM';
+      else if (record.certificateType === 'pals') typeName = 'SHA PALS PROVIDER';
+      else if (record.certificateType === 'salso') typeName = 'SHA ALSO PROVIDER COURSE';
+      else if (record.certificateType === 'nrp') typeName = 'SHA NRP PROVIDER';
+      else if (record.certificateType === 'cpr') typeName = 'SHA CPR PROVIDER';
+      else if (record.certificateType === 'acls') typeName = 'SHA ACLS PROVIDER';
+      else if (record.certificateType === 'atls') typeName = 'SHA ATLS PROVIDER';
+
+      document.getElementById('print-certificate').innerHTML =
+        '<div class="certificate">' +
+          '<div class="cert-deco"></div>' +
+          '<div class="certificate-inner">' +
+            '<div class="cert-header">' +
+              '<div class="cert-logo-area">' +
+                '<div class="cert-logo-mark">' +
+                  '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"></path></svg>' +
+                '</div>' +
+                '<div class="cert-logo-text">' +
+                  '<h3>Saudi Heart Association</h3>' +
+                  '<p>جمعية القلب السعودية</p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="cert-badge-area">' +
+                '<p class="cert-type-label">PROVIDER CERTIFICATE</p>' +
+                '<h2 class="cert-type-name">' + typeName + '</h2>' +
+              '</div>' +
+            '</div>' +
+            '<div class="cert-body">' +
+              '<p class="certifies-text">THIS CERTIFIES THAT</p>' +
+              '<div class="trainee-name">' + record.name + '</div>' +
+              '<p class="completion-text">has successfully completed the national cognitive and skills performance examination in accordance with the standards and guidelines of the Saudi Heart Association.</p>' +
+            '</div>' +
+            '<div class="cert-details-grid">' +
+              '<div class="cert-detail-item"><span class="detail-label">REGISTRATION ID</span><span class="detail-value">' + record.registrationId + '</span></div>' +
+              '<div class="cert-detail-item"><span class="detail-label">ISSUED</span><span class="detail-value">' + formatDate(record.issueDate) + '</span></div>' +
+              '<div class="cert-detail-item"><span class="detail-label">EXPIRES</span><span class="detail-value">' + formatDate(record.expiryDate) + '</span></div>' +
+              '<div class="cert-detail-item"><span class="detail-label">ECERTIFICATE ID</span><span class="detail-value">' + record.eCertificateId + '</span></div>' +
+            '</div>' +
+            '<div class="cert-center-item">' +
+              '<span class="detail-label">TRAINING CENTER</span>' +
+              '<span class="detail-value">' + record.center + '</span>' +
+            '</div>' +
+            '<div class="cert-footer">' +
+              '<div class="cert-signature">' +
+                '<span class="sig-script">Fahad Alsohime</span>' +
+                '<span class="sig-name">Prof. Fahad Alsohime</span>' +
+                '<span class="sig-title">Chairman, National CPR Committee</span>' +
+              '</div>' +
+              '<div class="cert-qr">' +
+                '<img id="cert-qr-img" src="' + qrImgSrc + '" alt="QR Code" />' +
+                '<p>Scan to verify<br>certificate authenticity</p>' +
+              '</div>' +
+              '<div class="cert-seal">' +
+                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>' +
+                '<span>SHA<br>VERIFIED</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function closeModal() {
+      document.getElementById('cert-modal').style.display = 'none';
+    }
+
+    function printCertificate() {
+      window.print();
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      var d = new Date(dateStr);
+      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return String(d.getDate()).padStart(2, '0') + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    }
+
+    window.onload = init;
+  </script>
+
+
+</body>
+</html>
