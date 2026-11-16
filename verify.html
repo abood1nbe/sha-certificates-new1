@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Participant Details - National Life Support Committee</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Roboto+Slab:wght@700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary-red: #e31e24; 
+            --dark-bg: #071d24; 
+            --footer-text: #aaa; 
+            --nav-green: #00a651;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Open Sans', 'Cairo', sans-serif; background: #fff; direction: ltr; color: #333; overflow-x: hidden; }
+        
+        /* Header المشترك */
+        .header { 
+            background: #fff; 
+            padding: 12px 5%; 
+            border-bottom: 1px solid #eee; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            position: relative;
+            z-index: 10000;
+        }
+        .header img { 
+            height: 65px; 
+            object-fit: contain;
+        }
+        
+        .menu-toggle-btn { 
+            width: 42px;
+            height: 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            outline: none;
+            z-index: 10001;
+            font-size: 24px;
+            color: #000;
+        }
+
+        /* القائمة المنسدلة */
+        .mobile-nav-overlay {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border-top: 4px solid var(--nav-green);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 9999;
+            direction: ltr;
+            font-family: 'Open Sans', 'Cairo', sans-serif;
+        }
+
+        .mobile-nav-overlay.open {
+            display: block !important;
+        }
+
+        .nav-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 16px 25px;
+        }
+
+        .notification-icon-wrapper {
+            position: relative;
+            font-size: 22px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .right-controls-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            position: relative;
+        }
+
+        .toggle-plus-btn {
+            font-size: 18px;
+            color: #00a651;
+            font-weight: bold;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 0;
+        }
+
+        .notification-badge-zero {
+            background: #ff5722;
+            color: white;
+            font-size: 11px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-top: 6px;
+        }
+
+        .dropdown-expandable-content {
+            display: none;
+            padding: 0 25px 20px 25px;
+            border-top: 1px solid #f0f0f0;
+            text-align: left;
+        }
+
+        .dropdown-expandable-content.show {
+            display: block;
+        }
+
+        .recent-activities-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #556270;
+            margin: 20px 0 15px 0;
+        }
+
+        .activities-divider {
+            height: 1px;
+            background-color: #eee;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .read-more-link {
+            display: inline-block;
+            font-size: 16px;
+            color: #556270;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .read-more-link:hover {
+            color: var(--primary-red);
+        }
+
+        /* Banner Section للرئيسية */
+        .banner { 
+            background-image: linear-gradient(rgba(7, 29, 36, 0.88), rgba(7, 29, 36, 0.88)), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat;
+            padding-top: 50px; 
+            text-align: center; 
+            color: #fff; 
+            width: 100%;
+        }
+
+        .banner h1 { 
+            font-family: 'Roboto Slab', serif;
+            font-size: 48px; 
+            font-weight: 800; 
+            margin-bottom: 35px; 
+            line-height: 1.15;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            padding: 0 15px;
+        }
+
+        .breadcrumb { 
+            font-size: 19px; 
+            background: rgba(255, 255, 255, 0.22); 
+            padding: 12px 0;
+            color: #fff; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-weight: 400;
+            white-space: nowrap; 
+            width: 100%;
+        }
+
+        .breadcrumb a {
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .breadcrumb .separator {
+            color: #ffffff;
+            font-weight: 700;
+            padding: 0 4px;
+        }
+
+        .breadcrumb span.active-page { 
+            color: #00a651; 
+            font-weight: 600; 
+        }
+
+        /* Main Content Container */
+        .content-section { padding: 40px 5%; max-width: 1200px; margin: 0 auto; }
+
+        /* Search Card */
+        .search-box-card {
+            background: #fff;
+            max-width: 450px;
+            margin: 40px auto;
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            text-align: center;
+            border: 1px solid #eee;
+        }
+        .search-box-card h2 {
+            font-size: 34px;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        .search-box-card .search-line {
+            height: 1px;
+            background: #eee;
+            margin-bottom: 25px;
+        }
+        .search-box-card input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            outline: none;
+            color: #333;
+            text-align: center;
+        }
+        .search-box-card button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-red);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* مربع تفاصيل الشهادة */
+        .certificate-details-card {
+            background-color: #ffffff;
+            max-width: 620px;
+            margin: 20px auto;
+            padding: 35px 40px;
+            border-radius: 8px;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .certificate-details-card .card-title { 
+            font-family: 'Roboto Slab', serif;
+            font-size: 44px; 
+            font-weight: 800; 
+            color: #071d24; 
+            margin-top: 0;
+            margin-bottom: 20px; 
+            line-height: 1.1; 
+        }
+
+        .certificate-details-card .title-divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .detail-row { display: flex; align-items: flex-start; margin-bottom: 22px; }
+        .detail-label { width: 165px; color: #555; font-weight: 700; font-size: 16px; line-height: 1.35; flex-shrink: 0; }
+        .detail-value { color: #555; font-weight: 600; font-size: 16px; line-height: 1.35; padding-left: 20px; }
+
+        /* Footer Sections مع الزخرفة الخلفية */
+        .main-footer { 
+            background: var(--dark-bg); 
+            color: #fff; 
+            padding: 60px 5%; 
+            text-align: right; 
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        .footer-decoration {
+            position: absolute;
+            left: -100px;
+            bottom: 100px;
+            width: 500px;
+            height: 300px;
+            border: 3px solid rgba(203, 179, 77, 0.15);
+            border-top-color: transparent;
+            border-right-color: transparent;
+            border-radius: 50%;
+            transform: rotate(-20deg);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .footer-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
+        
+        .footer-brand {
+            display: flex !important;
+            justify-content: flex-start !important;
+            align-items: center !important;
+            margin-bottom: 25px !important;
+            padding: 0 !important;
+        }
+
+        .footer-transparent-logo {
+            height: 75px !important;
+            width: auto !important;
+            max-width: 100% !important;
+            display: block !important;
+        }
+
+        .sha-footer-banner {
+            width: 100% !important;
+            max-width: 100% !important;
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 20px 0 15px 0 !important;
+            display: block !important;
+            border-radius: 0 !important;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .footer-widget h3 { 
+            font-size: 22px; 
+            margin-bottom: 25px; 
+            position: relative; 
+            padding-bottom: 5px; 
+            text-align: right; 
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .footer-widget p, .footer-widget a { 
+            font-size: 15px; 
+            color: #a3b8be; 
+            text-decoration: none; 
+            display: block; 
+            margin-bottom: 14px; 
+            text-align: right; 
+            line-height: 1.8; 
+        }
+        .footer-widget a:hover { color: #fff; }
+
+        .footer-widget.contact-info {
+            text-align: right;
+            direction: rtl;
+        }
+        .footer-widget.contact-info .title-ar {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+        .footer-widget.contact-info .title-en {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 25px;
+            line-height: 1;
+        }
+        .footer-widget.contact-info .section-head {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 20px;
+            margin-bottom: 12px;
+        }
+        .footer-widget.contact-info .contact-item {
+            margin-bottom: 16px;
+        }
+        .footer-widget.contact-info .contact-item label {
+            display: block;
+            font-size: 15px;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .footer-widget.contact-info .contact-item a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #a3b8be;
+            font-size: 15px;
+            direction: ltr;
+        }
+        .footer-widget.contact-info .contact-item a i {
+            color: #a3b8be;
+            font-size: 16px;
+        }
+        .footer-widget.contact-info .location-text {
+            color: #a3b8be;
+            font-size: 14px;
+            line-height: 1.6;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .footer-widget.contact-info .phone-box {
+            margin-top: 25px;
+            text-align: left;
+            direction: ltr;
+        }
+        .footer-widget.contact-info .phone-box span {
+            display: block;
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 5px;
+            font-family: 'Cairo', sans-serif;
+        }
+        .footer-widget.contact-info .phone-box a {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffffff;
+            direction: ltr;
+            display: block;
+            text-align: left;
+        }
+        
+        .footer-verify-box { 
+            background: #fff; 
+            border-radius: 6px; 
+            margin-top: 20px; 
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .footer-verify-box input { 
+            width: 100%; 
+            padding: 18px 15px; 
+            border: none; 
+            border-bottom: 1px solid #eaeaea; 
+            text-align: center; 
+            font-size: 17px; 
+            outline: none;
+            color: #555;
+            background: #fff;
+            font-family: 'Open Sans', 'Cairo', sans-serif;
+        }
+        .footer-verify-box input::placeholder {
+            color: #888;
+        }
+        .footer-verify-box button { 
+            width: 100%; 
+            padding: 16px; 
+            background: #fff; 
+            border: 0; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            font-weight: 700; 
+            font-size: 20px;
+            color: #0c232b; 
+            font-family: 'Cairo', sans-serif;
+            transition: background 0.2s;
+        }
+        .footer-verify-box button:hover {
+            background: #f8f9fa;
+        }
+        .footer-verify-box button .arrow-icon {
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        .bottom-bar { background: #041217; padding: 20px 5%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
+        .bottom-bar p { font-size: 13px; color: #666; }
+        .bottom-bar b { color: #888; }
+        .bottom-bar img { height: 20px; vertical-align: middle; margin-left: 10px; }
+
+        #loadingSection { display: none; text-align: center; padding: 40px; }
+        .spinner { border: 4px solid rgba(0,0,0,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: var(--primary-red); animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 600px) {
+            .certificate-details-card { padding: 25px 20px; }
+            .certificate-details-card .card-title { font-size: 34px; }
+            .detail-label { width: 140px; font-size: 15px; }
+            .detail-value { font-size: 15px; padding-left: 10px; }
+            .footer-brand { flex-direction: column; text-align: center; }
+            .banner h1 { font-size: 32px; }
+            .breadcrumb { font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href='/' style='cursor: pointer;'>
+            <img src="https://shacpr.org.sa/images/sha.png" alt="National Life Support Committee Logo">
+        </a>
+
+        <button class="menu-toggle-btn" id="menuToggleBtn" onclick="toggleMenu()" aria-label="Toggle Navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+
+        <nav class="mobile-nav-overlay" id="mobileNavMenu">
+            <div class="nav-top-bar">
+                <div class="right-controls-wrapper">
+                    <button class="toggle-plus-btn" id="togglePlusBtn" onclick="toggleExpandContent()">
+                        <i class="fa fa-plus" id="plusMinusIcon"></i>
+                    </button>
+                    <div class="notification-badge-zero">0</div>
+                </div>
+                <div class="notification-icon-wrapper">
+                    <i class="fa-regular fa-bell"></i>
+                </div>
+            </div>
+            
+            <div class="dropdown-expandable-content" id="expandableContent">
+                <div class="recent-activities-title">
+                    <span style="color: #556270; cursor: default;">Recent Activities</span>
+                </div>
+                <div class="activities-divider"></div>
+                <a class='read-more-link' href='/activities'>Read more...</a>
+            </div>
+        </nav>
+    </header>
+
+    <div id="homeSection" class="page-section active-section">
+        <section class="banner">
+            <h1>Search Participant<br>Details</h1>
+            <div class="breadcrumb">
+                <a href='/'>Home</a> 
+                <span class="separator">/</span> 
+                <span class="active-page">Search Participant Details</span>
+            </div>
+        </section>
+
+        <main class="content-section">
+            <div id="searchCardSection" class="search-box-card">
+                <h2>Certificate<br>Verification</h2>
+                <div class="search-line"></div>
+                <input type="text" id="mainCertInput" placeholder="Enter eCertificate ID">
+                <button onclick="mainSearchVerify()">Verify</button>
+            </div>
+
+            <div id="details-view" style="display: none;">
+                <div class="certificate-details-card">
+                    <h1 class="card-title">Certificate<br>Details</h1>
+                    <div class="title-divider"></div>
+
+                    <div id="loadingSection" style="display:none;"><div class="spinner"></div></div>
+
+                    <div id="detailsSection" style="display:none;">
+                        <div class="detail-row">
+                            <div class="detail-label">Certificate<br>Holder Name:</div>
+                            <div class="detail-value" id="val-name">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Course Name:</div>
+                            <div class="detail-value" id="val-course">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Training Center:</div>
+                            <div class="detail-value" id="val-center">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Certificate Valid<br>From:</div>
+                            <div class="detail-value" id="val-issue">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Certificate<br>Expiry Date:</div>
+                            <div class="detail-value" id="val-expiry">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Certificate<br>Status:</div>
+                            <div class="detail-value" id="val-status">-</div>
+                        </div>
+                    </div>
+                    
+                    <div id="notFoundSection" style="display:none; text-align:center; padding: 20px 0;">
+                       <h2 style="color:var(--primary-red); font-family: 'Roboto Slab', serif; font-size: 44px; font-weight: 800; line-height: 1.15; margin: 0;">Invalid<br>eCertificate ID</h2>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-decoration"></div>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <svg class="footer-transparent-logo" viewBox="0 0 900 160" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(5, 2) scale(1.1)">
+                        <path d="M 118 148 C 105 135, 74 121, 56 94 C 40 71, 39 46, 53 29 C 68 11, 95 8, 118 28 C 138 6, 169 4, 187 20 C 208 39, 201 67, 187 88 C 170 115, 143 133, 118 148 Z" fill="none" stroke="#e31e24" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M 12 86 L 72 86 L 91 53 L 107 114 L 125 23 L 141 106 L 160 86 L 228 86" fill="none" stroke="#1b3767" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M 118 148 C 110 127, 101 105, 94 82 C 89 64, 86 49, 82 37" fill="none" stroke="#e31e24" stroke-width="7" stroke-linecap="round"/>
+                        <path d="M 82 37 C 61 22, 42 27, 27 42 M 82 37 C 66 14, 49 11, 39 18 M 82 37 C 88 13, 103 7, 119 16 M 82 37 C 103 18, 117 21, 129 32 M 82 37 C 106 31, 119 37, 127 45" fill="none" stroke="#00a651" stroke-width="4.5" stroke-linecap="round"/>
+                    </g>
+                    <text x="290" y="72" fill="#18396d" font-family="'Open Sans', sans-serif" font-weight="700" font-size="38" letter-spacing="0.3">National Life Support Committee</text>
+                    <text x="290" y="122" fill="#18396d" font-family="'Cairo', sans-serif" font-weight="700" font-size="39">اللجنه الوطنية لدعم الحياة</text>
+                </svg>
+            </div>
+
+            <div class="footer-grid">
+                <div class="footer-widget">
+                    <h3>معلومات عنا</h3>
+                    <p>جمعية القلب السعودية، والتي تسمى فيما بعد "الجمعية" معترف بها في مقرها وقد يكون لديها المزيد من الفروع في مواقع أخرى إذا لزم الأمر.</p>
+                    <p>.تقدم وتطوير التفكير العلمي في تخصص الجمعية</p>
+                    
+                    <img src="https://shacpr.org.sa/images/sha-transparent.png" class="sha-footer-banner" alt="Saudi Heart Association">
+                    
+                    <a href="https://shacpr.org.sa/AboutUs/Index" target="_blank">اقرأ أكثر</a>
+                </div>
+
+                <div class="footer-widget">
+                    <h3>الدورات المطلوبة</h3>
+                    <a href="https://shacpr.org.sa/OnlineCourses/Index" target="_blank">SHA PALS Provider</a>
+                    <a href="https://shacpr.org.sa/OnlineCourses/Index" target="_blank">SHA ALSO Provider Course (SALSO)</a>
+                    <a href="https://shacpr.org.sa/OnlineCourses/Index" target="_blank">SHA NRP Provider</a>
+                    <a href="https://shacpr.org.sa/OnlineCourses/Index" target="_blank">SHA CPR Provider</a>
+                    <a href="https://shacpr.org.sa/OnlineCourses/Index" target="_blank">SHA ACLS Provider</a>
+                </div>
+
+                <div class="footer-widget">
+                    <h3>روابط سريعة</h3>
+                    <a href='/'>الصفحة الرئيسية</a>
+                    <a href="https://shacpr.org.sa/OnlineCourses/Index" target="_blank">الدورات</a>
+                    <a href="https://shacpr.org.sa/OnlineCourses/Index" target="_blank">دورات أونلاين</a>
+                    <a href="https://shacpr.org.sa/TrainingCenter/Index" target="_blank">مراكز التدريب</a>
+                    <a href="https://admin.shacpr.org.sa/Home/RegisterTrainingCenter" target="_blank">اعتماد مركز تدريب</a>
+                    <a href="https://ksacpr.org.sa/" target="_blank">Browse for old cpr website</a>
+                    <a href="https://admin.shacpr.org.sa/" target="_blank">For Instructors and Coordinator</a>
+                    <a href="https://shacpr.org.sa/RIEH/Home" target="_blank">RIEH Course</a>
+                </div>
+
+                <div class="footer-widget contact-info">
+                    <div class="title-ar">اتصل بنا</div>
+                    <div class="title-en">Support</div>
+
+                    <div class="section-head">مساعدة سريعة</div>
+
+                    <div class="contact-item">
+                        <label>رئيس اللجنة الوطنية للإنعاش القلبي الرئوي</label>
+                        <a href="mailto:cprchairman@sha.org.sa">cprchairman@sha.org.sa <i class="fa-regular fa-envelope"></i></a>
+                    </div>
+
+                    <div class="contact-item">
+                        <label>فريق التسجيل بدورات الإنعاش القلبي الرئوي</label>
+                        <a href="mailto:cprregistration@sha.org.sa">cprregistration@sha.org.sa <i class="fa-regular fa-envelope"></i></a>
+                    </div>
+
+                    <div class="contact-item">
+                        <label>فريق التشغيل</label>
+                        <a href="mailto:cproperation@sha.org.sa">cproperation@sha.org.sa <i class="fa-regular fa-envelope"></i></a>
+                    </div>
+
+                    <div class="contact-item">
+                        <label>فريق الفعاليات</label>
+                        <a href="mailto:cprevents@sha.org.sa">cprevents@sha.org.sa <i class="fa-regular fa-envelope"></i></a>
+                    </div>
+
+                    <div class="contact-item">
+                        <label>مكتب المساعدة</label>
+                        <a href="mailto:cprhelpdesk@sha.org.sa">cprhelpdesk@sha.org.sa <i class="fa-regular fa-envelope"></i></a>
+                    </div>
+
+                    <div class="section-head">الموقع</div>
+                    <div class="location-text">
+                        Az Zahra, MPQM+839, Al Hanouf Building, Al Ihsa Street,<br>
+                        " Al Malaz, Riyadh 12811
+                    </div>
+
+                    <div class="phone-box">
+                        <span>اتصل بنا</span>
+                        <a href="tel:+966920000742">+966 92 000 0742</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-widget" style="margin-top: 40px; max-width: 400px; margin-left: auto;">
+                <div class="footer-verify-box">
+                    <input type="text" id="footerCertInput" placeholder="Enter eCertificate ID">
+                    <button onclick="footerVerify()"><span class="arrow-icon">←</span> تحقق</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="bottom-bar">
+        <p>Copyright © 2026 Saudi Heart Association <b>Powered & Owned By Konoz Retaj IT</b> <img src="https://shacpr.org.sa/images/kr-logo300.png" alt="KR"></p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script>
+        function toggleMenu() {
+            const nav = document.getElementById('mobileNavMenu');
+            const menuBtn = document.getElementById('menuToggleBtn');
+            
+            nav.classList.toggle('open');
+            
+            if (nav.classList.contains('open')) {
+                menuBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+            } else {
+                menuBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+            }
+        }
+
+        function toggleExpandContent() {
+            const content = document.getElementById('expandableContent');
+            const icon = document.getElementById('plusMinusIcon');
+            
+            content.classList.toggle('show');
+            if (content.classList.contains('show')) {
+                icon.classList.remove('fa-plus');
+                icon.classList.add('fa-minus');
+            } else {
+                icon.classList.remove('fa-minus');
+                icon.classList.add('fa-plus');
+            }
+        }
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAYsO0fQDLMbh2V9OlL_tS9aaHmrUADdOc",
+            authDomain: "sha-certificates-new1.firebaseapp.com",
+            projectId: "sha-certificates-new1",
+            storageBucket: "sha-certificates-new1.firebasestorage.app",
+            messagingSenderId: "576150414426",
+            appId: "1:576150414426:web:a126f5f273e1b2c9b26463"
+        };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const db = firebase.firestore();
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const certId = urlParams.get('id');
+            if (certId) { 
+                document.getElementById('mainCertInput').value = certId;
+                verifyCertificate(certId); 
+            }
+        };
+
+        function mainSearchVerify() {
+            const id = document.getElementById('mainCertInput').value.trim();
+            if (id) {
+                verifyCertificate(id);
+            } else {
+                alert('Please enter Certificate ID');
+            }
+        }
+
+        function footerVerify() {
+            const id = document.getElementById('footerCertInput').value.trim();
+            if (id) {
+                document.getElementById('mainCertInput').value = id;
+                verifyCertificate(id);
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString || dateString === '-') return '-';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+
+            const day = String(date.getDate()).padStart(2, '0');
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+
+            return `${day}-${month}-${year}`;
+        }
+
+        async function verifyCertificate(certId) {
+            document.getElementById('searchCardSection').style.display = 'none';
+            document.getElementById('details-view').style.display = 'block';
+            
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('detailsSection').style.display = 'none';
+            document.getElementById('notFoundSection').style.display = 'none';
+
+            try {
+                const doc = await db.collection('certificates').doc(certId).get();
+                document.getElementById('loadingSection').style.display = 'none';
+
+                if (doc.exists) { 
+                    showDetails(doc.data()); 
+                } else { 
+                    document.getElementById('notFoundSection').style.display = 'block'; 
+                }
+            } catch (e) { 
+                document.getElementById('loadingSection').style.display = 'none'; 
+                document.getElementById('notFoundSection').style.display = 'block'; 
+            }
+        }
+
+        function showDetails(data) {
+            document.getElementById('val-name').textContent = data.holderName || data.name || '-';
+            document.getElementById('val-course').textContent = data.courseName || data.courseTitleEn || '-';
+            document.getElementById('val-center').textContent = data.trainingCenter || data.center || '-';
+            
+            document.getElementById('val-issue').textContent = formatDate(data.validFrom || data.issueDate);
+            document.getElementById('val-expiry').textContent = formatDate(data.validTo || data.expiryDate);
+            
+            const statusElem = document.getElementById('val-status');
+            const statusVal = (data.status || '').toLowerCase();
+            if (statusVal === 'active' || statusVal === 'valid') {
+                statusElem.textContent = 'Active';
+                statusElem.style.color = '#00a651';
+            } else {
+                statusElem.textContent = 'Expired';
+                statusElem.style.color = 'red';
+            }
+
+            document.getElementById('detailsSection').style.display = 'block';
+            document.getElementById('details-view').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>
